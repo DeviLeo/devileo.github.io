@@ -1,7 +1,7 @@
 (function () {
 
   var
-    AUDIO_FILE        = 'songs/cbg',
+	audio 			  = document.getElementById( 'audio' ),
     PARTICLE_COUNT    = 250,
     MAX_PARTICLE_SIZE = 12,
     MIN_PARTICLE_SIZE = 2,
@@ -17,7 +17,7 @@
     particles     = group.children,
     colors        = [ 0xaaee22, 0x04dbe5, 0xff0077, 0xffb412, 0xf6c83d ],
     t, dancer, kick;
-
+    
   /*
    * Dancer.js magic
    */
@@ -29,6 +29,9 @@
 
   dancer = new Dancer();
   kick = dancer.createKick({
+  	frequency: [10, 1200],
+  	threshold: 0.1,
+  	decay: 0.1,
     onKick: function () {
       var i;
       if ( particles[ 0 ].scale.x > MAX_PARTICLE_SIZE ) {
@@ -43,15 +46,16 @@
           beamGroup.children[ i ].visible = true;
         }
       }
+      
     },
     offKick: decay
   });
 
   dancer.onceAt( 0, function () {
     kick.on();
-    changeParticleMat( 'white' );
   }).onceAt( 3, function () {
     scene.add( beamGroup );
+    changeParticleMat( 'white' );
   }).after( 3, function () {
     beamGroup.rotation.x += BEAM_RATE;
     beamGroup.rotation.y += BEAM_RATE;
@@ -67,10 +71,11 @@
     changeParticleMat( 'pink' );
   }).onceAt( 132, function () {
     changeParticleMat();
-  }).onceAt( 205, function () {
-	document.getElementById('loading').style.display = 'inline';
+  }).onceAt( 203, function () {
+    kick.off();
+    document.getElementById('loading').style.display = 'inline';
   }).fft( document.getElementById( 'fft' ) )
-    .load({ src: AUDIO_FILE, codecs: [ 'ogg', 'mp3' ]})
+    .load( audio )
 
   Dancer.isSupported() || loaded();
   !dancer.isLoaded() ? dancer.bind( 'loaded', loaded ) : loaded();
