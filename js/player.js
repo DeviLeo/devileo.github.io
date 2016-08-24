@@ -61,11 +61,11 @@
     changeParticleMat( 'blue' );
   }).onceAt( 62, function () {
     changeParticleMat();
-  }).onceAt( 112, function () {
+  }).onceAt( 113, function () {
     changeParticleMat( 'white' );
-  }).onceAt( 123, function () {
+  }).onceAt( 124, function () {
     changeParticleMat( 'pink' );
-  }).onceAt( 130, function () {
+  }).onceAt( 132, function () {
     changeParticleMat();
   }).onceAt( 205, function () {
 	document.getElementById('loading').style.display = 'inline';
@@ -126,6 +126,10 @@
   }
 
   function changeParticleMat ( color ) {
+    for ( var i = PARTICLE_COUNT; i--; ) {
+      particles[i].scale.x = particles[i].scale.y = Math.random() * 10 + 5;
+    }
+    
     var mat = newParticleMat( color );
     for ( var i = PARTICLE_COUNT; i--; ) {
       if ( !color ) {
@@ -133,6 +137,8 @@
       }
       particles[ i ].material = mat;
     }
+    
+    decay();
   }
 
   function newParticleMat( color ) {
