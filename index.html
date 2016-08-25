@@ -3,8 +3,14 @@
 	<head>
 	    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 		<link href='css/dancer.css' rel='stylesheet' type='text/css'>
+		<script type="text/javascript">
+			function showCopyright() {
+				var message = "This page is modified from the project, dancer.js by Jordan Santell.\r\nIf you like dancer.js, please visit Jordan Santell's project site \r\nhttps://github.com/jsantell/dancer.js";
+				alert(message);
+			}
+		</script>
 	</head>
-	<body>
+	<body onload="showCopyright();">
 		<div id="info">
 			<h1>dancer.js</h1>
 			<h2>JavaScript Audio Library</h2>
