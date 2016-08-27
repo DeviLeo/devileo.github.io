@@ -1,6 +1,5 @@
-(function () {
 
-  var
+	var
 	audio 			  = document.getElementById( 'audio' ),
     PARTICLE_COUNT    = 250,
     MAX_PARTICLE_SIZE = 12,
@@ -17,72 +16,71 @@
     particles     = group.children,
     colors        = [ 0xaaee22, 0x04dbe5, 0xff0077, 0xffb412, 0xf6c83d ],
     t, dancer, kick;
-    
-  /*
-   * Dancer.js magic
-   */
 
-  Dancer.setOptions({
-    flashSWF : 'lib/soundmanager2.swf',
-    flashJS  : 'lib/soundmanager2.js'
-  });
+function initDancer() {
+	
+	Dancer.setOptions({
+		flashSWF : 'lib/soundmanager2.swf',
+		flashJS  : 'lib/soundmanager2.js'
+	});
+	
+	dancer = new Dancer();
+	kick = dancer.createKick({
+		frequency: [10, 1200],
+		threshold: 0.1,
+		decay: 0.1,
+		onKick: function () {
+			var i;
+			if ( particles[ 0 ].scale.x > MAX_PARTICLE_SIZE ) {
+				decay();
+			} else {
+				for ( i = PARTICLE_COUNT; i--; ) {
+					particles[ i ].scale.addSelf( GROWTH_VECTOR );
+				}
+			}
+			if ( !beamGroup.children[ 0 ].visible ) {
+				for ( i = BEAM_COUNT; i--; ) {
+					beamGroup.children[ i ].visible = true;
+				}
+			}
+		},
+		offKick: decay
+	})
+	
+	setupDancer(dancer);
+	dancer.fft( document.getElementById( 'fft' ) )
+		.load( audio );
+	
+	Dancer.isSupported() || loaded();
+	!dancer.isLoaded() ? dancer.bind( 'loaded', loaded ) : loaded();
+}
 
-  dancer = new Dancer();
-  kick = dancer.createKick({
-  	frequency: [10, 1200],
-  	threshold: 0.1,
-  	decay: 0.1,
-    onKick: function () {
-      var i;
-      if ( particles[ 0 ].scale.x > MAX_PARTICLE_SIZE ) {
-        decay();
-      } else {
-        for ( i = PARTICLE_COUNT; i--; ) {
-          particles[ i ].scale.addSelf( GROWTH_VECTOR );
-        }
-      }
-      if ( !beamGroup.children[ 0 ].visible ) {
-        for ( i = BEAM_COUNT; i--; ) {
-          beamGroup.children[ i ].visible = true;
-        }
-      }
-      
-    },
-    offKick: decay
-  });
-
-  dancer.onceAt( 0, function () {
-    kick.on();
-  }).onceAt( 3, function () {
-    scene.add( beamGroup );
-    changeParticleMat( 'white' );
-  }).after( 3, function () {
-    beamGroup.rotation.x += BEAM_RATE;
-    beamGroup.rotation.y += BEAM_RATE;
-  }).onceAt( 19, function () {
-    changeParticleMat();
-  }).onceAt( 53, function () {
-    changeParticleMat( 'blue' );
-  }).onceAt( 62, function () {
-    changeParticleMat();
-  }).onceAt( 113, function () {
-    changeParticleMat( 'white' );
-  }).onceAt( 124, function () {
-    changeParticleMat( 'pink' );
-  }).onceAt( 132, function () {
-    changeParticleMat();
-  }).onceAt( 203, function () {
-    kick.off();
-    document.getElementById('loading').style.display = 'inline';
-  }).fft( document.getElementById( 'fft' ) )
-    .load( audio )
-
-  Dancer.isSupported() || loaded();
-  !dancer.isLoaded() ? dancer.bind( 'loaded', loaded ) : loaded();
-
-  /*
-   * Three.js Setup
-   */
+function setupDancer(dancer) {
+	dancer.onceAt( 0, function () {
+		kick.on();
+	}).onceAt( 3, function () {
+		scene.add( beamGroup );
+		changeParticleMat( 'white' );
+	}).after( 3, function () {
+		beamGroup.rotation.x += BEAM_RATE;
+		beamGroup.rotation.y += BEAM_RATE;
+	}).onceAt( 19, function () {
+		changeParticleMat();
+	}).onceAt( 53, function () {
+		changeParticleMat( 'blue' );
+	}).onceAt( 62, function () {
+		changeParticleMat();
+	}).onceAt( 113, function () {
+		changeParticleMat( 'white' );
+	}).onceAt( 124, function () {
+		changeParticleMat( 'pink' );
+	}).onceAt( 132, function () {
+		changeParticleMat();
+	}).onceAt( 203, function () {
+		kick.off();
+		document.getElementById('loading').style.display = 'inline';
+	})
+}
 
   function on () {
     for ( var i = PARTICLE_COUNT; i--; ) {
@@ -115,7 +113,7 @@
       beamGroup.add( beam );
     }
   }
-
+  
   function decay () {
     if ( beamGroup.children[ 0 ].visible ) {
       for ( i = BEAM_COUNT; i--; ) {
@@ -129,7 +127,7 @@
       }
     }
   }
-
+  
   function changeParticleMat ( color ) {
     for ( var i = PARTICLE_COUNT; i--; ) {
       particles[i].scale.x = particles[i].scale.y = Math.random() * 10 + 5;
@@ -178,15 +176,17 @@
     }
 
     anchor.addEventListener( 'click', function () {
+	  setupDancer(dancer);
       dancer.play();
       document.getElementById('loading').style.display = 'none';
     }, false );
 
   }
-
+  
+  function dancerDebug() {
+	window.dancer = dancer;
+  }
+  
   on();
-
-  // For debugging
-  window.dancer = dancer;
-
-})();
+  initDancer();
+  dancerDebug();

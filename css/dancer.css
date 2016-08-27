@@ -88,7 +88,7 @@ body {
     bottom: 0;
     left: 10%;
     width: 90%;
-    height: 25px;
+    height: 32px;
 }
 
 #fft { 
@@ -108,8 +108,8 @@ body {
     left: 0;
     background-color: #111;
     width: 10%;
-    height: 25px;
-    line-height: 25px;
+    height: 32px;
+    line-height: 32px;
     text-align: center;
 }
 
